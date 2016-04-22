@@ -15,6 +15,8 @@
     var strokeData=0.4;
     var ColordeControl="#000";
     var strokeControl=0.3;
+    var focusX;
+    var focusY;
     /*---------------------------------------------------------------------------------------*/
     SIZEMAINPROJECTION=$("#maincontainer").width();
     var contro=20;
@@ -293,6 +295,7 @@
                             .attr("class","Selected")
                             .attr("cx",function(d){
                                             d.x=xStarCoordinates.invert(Math.max(6, Math.min(SIZEMAINPROJECTION - tolerancia , d3.event.x)));
+                                            console.log("el x normal:"+d3.event.x);
                                             return xStarCoordinates(d.x);//Math.max(6, Math.min(size - tolerancia , d3.event.x));
                                         })
                             .attr("cy",function(d){
@@ -355,9 +358,6 @@
                                                       .duration(velocidadAnimacion)
                                                       .attr("fill",function(d){return DataColor(parseInt(d.klasses),1000);});
                                                 });
-
-
-
                 }
                 function dragend(d,i){
 
@@ -438,12 +438,13 @@
                                             }
                                         }
                                       }else{
-                                                 var clickX =xStarCoordinates.invert(-1*d3.event.clientX); //(d3.event.clientX); //posicion del puntero
-                                                 var clickY =yStarCoordinates.invert(-1*d3.event.clientY); //(d3.event.clientY);
+
+                                                 var clickX =xStarCoordinates.invert(d3.event.clientX); //(d3.event.clientX); //posicion del puntero
+                                                 var clickY =yStarCoordinates.invert(d3.event.clientY); //(d3.event.clientY);
                                                  clickX=xStarCoordinates(clickX);
                                                  clickY=yStarCoordinates(clickY);
                                                  console.log("estos son los puntos del puntero:"+d3.event.clientX+"   -   "+d3.event.clientY);
-
+                                                //  console.log("estos son los puntos del puntero:"+evt.clientX+"   -   "+evt.clientY);
                                                  /*los puntos del centro*/
                                                  var xx=xStarCoordinates(d.x);
                                                  var yy=yStarCoordinates(d.y);
@@ -453,11 +454,11 @@
 
                                                   var distance=Math.sqrt((xx-clickX)*(xx-clickX)+(yy-clickY)*(yy-clickY));
                                                   console.log("distancia:"+distance+" el radio:"+CpScale(d.valores.length));
-/*
+
                                                   if(distance<CpScale(d.valores.length)){
                                                          DeleteDimensions(d,i);
                                                          d3.event.stopPropagation();
-                                                  }*/
+                                                  }
                                                     //d.x=xStarCoordinates.invert(Math.max(6, Math.min(SIZEMAINPROJECTION - tolerancia , d3.event.x)));
                                                     //return xStarCoordinates(d.x);//Math.max(6, Math.min(size - tolerancia , d3.event.x));
 
