@@ -1,0 +1,354 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <meta charset="utf-8" />
+    <title>STAR COORDINATES</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="css/foundation.css" />
+
+    <link rel="stylesheet" href="css/syle_Aux.css"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+
+      <script src="js/lib/jquery.js"></script>
+
+
+
+	<script src="js/pcaklasses.js"></script>
+    <script src="D3/d3.min.js"></script>
+    <script src="D3/d3.js"></script>
+    <script src="js/vendor/modernizr.js"></script>
+    <script src="js/lib/jquery-1.7.2.min.js"></script>
+    <script src="js/lib/bootstrap.js"></script>
+    <script src="js/lib/chart.js"></script>
+    <!-- Documentos javascript necesarios -->
+    <script src="js/Star/SalvarFile.js"></script>
+    <script src="js/Star/figue.js"></script>
+    <script src="js/Star/combinatorics.js"></script>
+    <script src="js/Star/clustering/clustering.js"></script>
+    <script src="js/lib/palette.js"></script>
+    <script src="js/lib/numeric.js"></script>
+    <script src="js/lib/FileSaver.js"></script>
+    <script src="js/Star/DesviacionEstandar.js"></script>
+    <script src="D3/polybrush.js"></script>
+    <script src="js/lib/utilitarios.js"></script>
+    <script src="js/Star/Neighbor.js"></script>
+
+    <script src="js/Star/AbstractVector.js"></script>
+    <script src="js/Star/DenseVector.js"></script>
+    <script src="js/Star/AbstractMatrix.js"></script>
+    <script src="js/Star/StarCoordinate.js"></script>
+    <script src="js/Star/SiluetteMetric.js"></script>
+
+    <script src="js/Star/SVD.js"></script>
+    <script src="js/Star/PCA.js"></script>
+
+
+    <script src="js/Star/genetico/utils.JS"></script>
+    <script src="js/Star/genetico/genetico.JS"></script>
+
+
+  <script> /*VARIABLES GLOBALES PARA TODA LA PROYECCION*/
+    var GENERALMATRIX= new AbstractMatrix(); //MATRIX QUE CONTIENE LA BASE DE DATOS
+    var LISTOFDIMENSIONS=new Array();	//arreglo de dimensiones individuales
+    var ListOfGroupsOfDimensions=new Array(); //arreglo de las agrupaciones
+    var MYCONTROLPOINTS=new Array();// Arreglo de los puntos de control
+    var osDados=new Array();//Arreglo de los datos que se esta manejando en la proyeccion
+    var SIZEMAINPROJECTION=0;
+    var SIZESECONDPROJECTION=0;
+    var MAS_INFINITO=100000;
+    var MENOS_INFINITO=-100000;
+    var DistanceMatrixGeneralMatrixOriginal=new Array();
+	var DistanceMatrixMainProjection=new Array();
+	var DistanceMatrixSecondDetail=new Array();
+	var klasesIndices=new Array(); //Arreglo que contiene las clases;
+	var ListOfRemovedDimensions=new Array();//arreglo con las dimensiones eliminadas
+	var HISTORIALESTADOS=new Array();
+	var MyFileName;
+  </script>
+
+  </head>
+
+  <body>
+    <script>
+      $(function() {
+        $("#maincontainer").css("height",$( "#maincontainer" ).width()+20);
+
+
+         $("#secondProj").css("height",$( "#secondProj" ).width());
+
+        SIZEMAINPROJECTION=$("#maincontainer" ).width();
+        SIZESECONDPROJECTION=$("#secondProj" ).width();
+
+        $( window ).resize(function() {
+            $("#maincontainer").css("height",$( "#maincontainer" ).width()+20);
+
+             $("#secondProj").css("height",$( "#secondProj" ).width());
+        });
+        $("#project_button").click(function(){
+             if(GENERALMATRIX.rows.length>0)
+              {Proyectar();}else{
+                alert('NO DATA');
+              }
+          });
+
+        $("#NbPreservarionButton").click(function(){
+            CalcularNeighborhoodPreservation();
+             BuildMetrics();
+        });
+
+        $("#GroupingButton").click(function(){
+            clusterizacionMain();
+        });
+
+        $("#Reordering_Button").click(function(){
+
+            ReorderingMain();
+        });
+
+        $("#RefreshMetrics").click(function(){
+
+        });
+
+        $("#Re_insert").click(function(){
+            SplitDimensions();
+        });
+
+        $("#insertRemoved").click(function(){
+          InsertDeletedDimensionsMain();
+        });
+
+        $("#MoveLeft").click(function(){
+             moveLeft();
+        });
+
+        $("#MoveRight").click(function(){
+              moveRight();
+        });
+
+        $("#getDetailTable").click(function(){
+            ChargeDetailTable();
+        });
+
+        $("#SaveStates").click(function(){
+            SalvarEstados();
+        });
+        $("#ShowNodeExplorer").click(function(){
+          console.log("SI ESTA ENTRANDO");
+           $("#secondProj").toggle();
+        });
+      });
+    </script>
+    <div class="row fullWidth" style="background-color:#f2f2f2">
+      <nav class="top-bar" data-topbar role="navigation" data-options="sticky_on: large" style="width:100%; background-color: #00465D;">
+        <center><h2><a style="color:#fff;">iStar: An Interactive Star Coordinates Approach for High Dimensional Data Exploration</a></h2></center>
+      </nav>
+    </div>
+    </br>
+<!--
+    <nav class="top-bar" data-topbar role="navigation">
+      <center> <ul class="title-area">
+        <li  class="name">
+          <h1><a>iStar: An Interactive Star Coordinates Approach for High Dimensional Data Exploration<a></h1>
+        </li>
+        </ul> </center>
+      </nav>
+    -->
+    <div class="row fullWidth">
+      <div class="large-2 columns"  style="float:left">
+        <div class="panel">
+          <div class="section-container vertical-nav" data-section data-options="deep_linking: false; one_up: true">
+            <h6>Choose file to upload</h6>
+            <input id="uploadFile" placeholder="Choose File" disabled="disabled" class="nombreArchivo"/>
+            <div class="upload">  <input type="file" name="upload" id="files" />   </div>
+            <div id="progress_bar"><div class="percent">0%</div></div>
+
+            <a id="project_button" class="button expand" style=" padding:5px;">Project</a>
+            <hr/>
+              <label style="color:#000822" >Method:
+                <select id="typeMethod">
+                  <option value="PCA">PCA</option>
+                  <option value="VARIANZA">Variance</option>
+                  <option value="PRUEBA">Centroids</option>
+                </select>
+              </label>
+            <div >
+              <div class="row collapse prefix-radius">
+                <div class="small-9 columns">
+                  <span class="prefix"># of Groups:</span>
+                </div>
+                <div class="small-3 columns">
+                  <input type="text" style=" padding:1px;" name="numGroup" id="numGroup" class="percentage" value="5"/>
+                </div>
+              </div>
+            </div>
+                <a id="GroupingButton" class="button expand" style=" padding:1px;">Grouping</a>
+            <hr/>
+
+            <label>Reordering:
+              <select id="typeMethodReordering">
+                <option value="Similarity">SIMILARITY</option>
+                <option value="Metric">METRIC</option>
+              </select>
+              <a id="Reordering_Button" class="button expand" style=" padding:1px;">Reordering</a>
+            </label>
+
+            <hr/>
+            <div  style="overflow-x: scroll; overflow-y: scroll;	height:300px; padding:4px">
+              <a id="Re_insert" class="button expand" style=" padding:1px;">Re_Insert</a>
+                <table id="myTableGroup" style="overflow-x: scroll; overflow-y: scroll;">
+                  <thead>
+                  <tr>
+                    <th>Group</th>
+
+                  </tr>
+                  </thead>
+                  <tbody>
+
+                  </tbody>
+                </table>
+              </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="large-6 columns" style="padding:0px;   height:965px; " >
+          <div id="maincontainer" class="large-12  large-centered  columns" style=" padding:0px; height:100px; border-style: ridge; border-width: 2px;  border-color: #008CBA; #008CBA; " >
+          </div>
+
+
+            <center> <a id="getDetailTable"> Charge Table </a></center>
+
+             <div class="large-12 columns" style="overflow-x: scroll; overflow-y: scroll;	height:500px; padding:4px">
+                    <table id="tableDetail" >
+                         <thead>
+                        <tr>
+                        <th>Group</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+              </div>
+      </div>
+
+
+
+      <aside class="large-4 columns">
+        <div class="panel">
+          <a id="ShowNodeExplorer" class="button expand" style=" padding:4px;">Node Explorer</a>
+         <div  id="secondProj" class="large-11 large-centered columns" style="background-color:white; padding:1px; border-style: ridge; border-width: 3px;  border-color: #008CBA; #008CBA"></div>
+
+        <hr/>
+         <div><center><a >METRICS</a> </center></div>
+            <div class="large-10 large-centered columns ">
+            <div  class="large-5 columns " style=" padding-bottom: 0px;">
+                          <div class="row collapse prefix-radius">
+                            <div class="small-9 columns">
+                              <span class="prefix">#Neighbors:</span>
+                            </div>
+                            <div class="small-3 columns">
+                              <input type="text" name="percentage" id="percentage" style="width:40px;" value="30" placeholder="Value">
+                            </div>
+                              </div>
+                  </div>
+              <div class="large-5 columns" style="padding-top:5px" >
+                  <input type="checkbox" id="LifePreview"><label for="LifePreview">Life Preview:</label>
+              </div>
+            </div>
+
+
+
+
+          <hr/>
+          <div  id="results" class="large-12 columns">
+
+
+            <!-- <a class="bookmarklet" href="javascript:javascript: (function () { var e = document.createElement('script'); e.setAttribute('src', 'https://nytimes.github.io/svg-crowbar/svg-crowbar.js'); e.setAttribute('class', 'svg-crowbar'); document.body.appendChild(e); })();">SVG Crowbar</a> -->
+          </div>
+          
+              <div id="NPreservation" class="large-10  large-centered columns" style=" height:230px; background-color:white; padding:3px; border-style: ridge; border-width: 2px;  border-color: #008CBA; #008CBA" >
+          </div>
+          <div  class="large-10  columns">
+               <div class="large-6  columns"><center><a id="SaveStates"> Save File</a></center></div>
+                 <div class="large-6  columns"><input type="file" name="upload" id="EstatesFiles" /></div>
+          </div>
+          <hr/>
+          <h6 id="ratio"></h6>
+			<script src="js/LoadData.js"></script>
+			
+        </div>
+
+
+
+
+
+
+
+        <div class="large-4 columns"  style="overflow-x: scroll; overflow-y: scroll;	height:500px; padding:4px">
+          <a id="MoveRight"> => </a>
+          <table id="myTable" style="overflow-x: scroll; overflow-y: scroll;">
+            <thead>
+            <tr>
+              <th>Attributes</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="large-4 columns" style="overflow-x: scroll; overflow-y: scroll;	height:500px; padding:4px">
+             <a id="MoveLeft"> <= </a>
+            <table id="myTableLeft" class="altrowstable" >
+              <thead>
+              <tr>
+                <th>Groups</th>
+
+              </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+        </div>
+        <div class="large-4 columns" style="overflow-x: scroll; overflow-y: scroll;	height:500px; padding:4px">
+            <a id="insertRemoved">Insert</a>
+              <table id="myTableRemoved" class="altrowstable" >
+                <thead>
+                <tr>
+                  <th>Deleted</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+        </div>
+
+      </aside>
+
+    </div>
+    <script src="js/index.js"></script>
+
+
+    <footer class="row">
+      <div class="large-12 columns">
+        <hr/>
+        <div class="row">
+          <div class="large-12 columns">
+            <p>.</p>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>
