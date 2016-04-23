@@ -40,6 +40,7 @@
              .append("g");
     var STAR=panel.append("svg:g").attr("id","STAR")
                         .attr("transform",function(){return "translate("+0+","+0+")";});
+
     /*
     STAR.append("rect")
             .attr("class","frame")
@@ -265,7 +266,7 @@
 
 
 
-                            STAR.selectAll(".head_coordinates")
+                                         STAR.selectAll(".head_coordinates")
                                          .data(MYCONTROLPOINTS)
                                          .enter()
                                          .append("circle")
@@ -279,12 +280,15 @@
                                          .attr("class","circleControl")
                                          .on("mouseover",mouseover)
                                          .on("mouseout",mouseout)
+                                         .on("mousedown",mousedown)
                                          .call(d3.behavior.drag()
                                         .on("dragstart",dragstart)
                                         .on("drag",drag)
                                         .on("dragend",dragend));
 
             /*-----------------------------------------------------------------------------------------*/
+
+
             function dragstart(){
                             d3.event.sourceEvent.stopPropagation();
 
@@ -295,7 +299,7 @@
                             .attr("class","Selected")
                             .attr("cx",function(d){
                                             d.x=xStarCoordinates.invert(Math.max(6, Math.min(SIZEMAINPROJECTION - tolerancia , d3.event.x)));
-                                            console.log("el x normal:"+d3.event.x);
+
                                             return xStarCoordinates(d.x);//Math.max(6, Math.min(size - tolerancia , d3.event.x));
                                         })
                             .attr("cy",function(d){
@@ -359,139 +363,93 @@
                                                       .attr("fill",function(d){return DataColor(parseInt(d.klasses),1000);});
                                                 });
                 }
+
+
                 function dragend(d,i){
 
-                            d3.select(this)
-                                .attr("class","circle")
-                                .attr("r",function(d){return CpScale(d.valores.length);});
-                                 var vectorPromedio=[];
-                                 d3.select(window).on("click", function(evt) {
 
+                      d3.select(this)
+                      .attr("class","circle")
+                      .attr("r",function(d){return CpScale(d.valores.length);});
+                      var vectorPromedio=[];
+                      d3.select(window).on("click", function(evt) {
 
-                                      if(d3.event.button == 0) {
+                                                           if(d3.event.button == 0) {
 
-                                        if(d3.event.shiftKey){
+                                                             if(d3.event.shiftKey){
 
-                                            FocusControlPointIndex=i;
-                                            llenar_CheckBox(MYCONTROLPOINTS[i].valores,"myTableGroup","Group","checkboxGroup");
-                                            //DeleteDimensions(d,i);
-                                        }
-                                        if (d3.event.ctrlKey) {
-                                            var punto=MYCONTROLPOINTS[i];
-                                            var xx=xStarCoordinates(d.x);
-                                            var yy=yStarCoordinates(d.y);
+                                                                 FocusControlPointIndex=i;
+                                                                 llenar_CheckBox(MYCONTROLPOINTS[i].valores,"myTableGroup","Group","checkboxGroup");
+                                                                 //DeleteDimensions(d,i);
+                                                             }
+                                                             if (d3.event.ctrlKey) {
+                                                                 var punto=MYCONTROLPOINTS[i];
+                                                                 var xx=xStarCoordinates(d.x);
+                                                                 var yy=yStarCoordinates(d.y);
 
-                                            var valorMayor;
-                                            //recorremos los puntos de control para ver si hay interseccion
-                                            MYCONTROLPOINTS.forEach(function(c,j){
-                                                if(j!=i){
-                                                    var xAux=xStarCoordinates(c.x);
-                                                    var yAux=yStarCoordinates(c.y);
-                                                    //hallamos la distacia=
-                                                    var distance=Math.sqrt((xx-xAux)*(xx-xAux)+(yy-yAux)*(yy-yAux));
-                                                    //console.log("distancia:"+distance+" el radio:"+CpScale(c.valores.length));
-                                                    if(distance<CpScale(c.valores.length)){
-                                                        valorMayor=j;
-                                                    }
-                                                }
-                                            });
-                                            //JUNTAMOS LOS VALORES DE LOS DOS GRUPOS
-                                            //Juntamos los puntos de control
-                                            //console.log(MycontrolPoints1);
-                                            if(parseInt(valorMayor)>=0){ //habra union
-                                                    //	d3.select("#cp"+i).remove();
-                                                    //	d3.select("#lcp"+i).remove();
-                                                //juntamos el texto y los valores
-                                                var aux=HallarMaximoIndiceGrupos();
-                                                MYCONTROLPOINTS[parseInt(valorMayor)].id="Group_"+aux;
-                                                MYCONTROLPOINTS[parseInt(valorMayor)].text="Group_"+aux;//MYCONTROLPOINTS[parseInt(valorMayor)].text+MYCONTROLPOINTS[i].text;
-                                                MYCONTROLPOINTS[parseInt(valorMayor)].valores=MYCONTROLPOINTS[parseInt(valorMayor)].valores.concat(MYCONTROLPOINTS[i].valores);
-                                                MYCONTROLPOINTS[parseInt(valorMayor)].color=ConcatColor(MYCONTROLPOINTS[parseInt(valorMayor)].color,MYCONTROLPOINTS[i].color);
-                                                //Actualizamos los valores
-                                                MYCONTROLPOINTS.splice(i,1);
-                                                var VArrayControlPointss=new Array();
-                                                var theMainScScalenumber=MENOS_INFINITO;
-                                                MYCONTROLPOINTS.forEach(function(d,i){
-                                                    VArrayControlPointss[i]=[parseFloat(d.x),parseFloat(d.y)];
+                                                                 var valorMayor;
+                                                                 //recorremos los puntos de control para ver si hay interseccion
+                                                                 MYCONTROLPOINTS.forEach(function(c,j){
+                                                                     if(j!=i){
+                                                                         var xAux=xStarCoordinates(c.x);
+                                                                         var yAux=yStarCoordinates(c.y);
+                                                                         //hallamos la distacia=
+                                                                         var distance=Math.sqrt((xx-xAux)*(xx-xAux)+(yy-yAux)*(yy-yAux));
+                                                                         //console.log("distancia:"+distance+" el radio:"+CpScale(c.valores.length));
+                                                                         if(distance<CpScale(c.valores.length)){
+                                                                             valorMayor=j;
+                                                                         }
+                                                                     }
+                                                                 });
+                                                                 //JUNTAMOS LOS VALORES DE LOS DOS GRUPOS
+                                                                 //Juntamos los puntos de control
+                                                                 //console.log(MycontrolPoints1);
+                                                                 if(parseInt(valorMayor)>=0){ //habra union
+                                                                         //	d3.select("#cp"+i).remove();
+                                                                         //	d3.select("#lcp"+i).remove();
+                                                                     //juntamos el texto y los valores
+                                                                     var aux=HallarMaximoIndiceGrupos();
+                                                                     MYCONTROLPOINTS[parseInt(valorMayor)].id="Group_"+aux;
+                                                                     MYCONTROLPOINTS[parseInt(valorMayor)].text="Group_"+aux;//MYCONTROLPOINTS[parseInt(valorMayor)].text+MYCONTROLPOINTS[i].text;
+                                                                     MYCONTROLPOINTS[parseInt(valorMayor)].valores=MYCONTROLPOINTS[parseInt(valorMayor)].valores.concat(MYCONTROLPOINTS[i].valores);
+                                                                     MYCONTROLPOINTS[parseInt(valorMayor)].color=ConcatColor(MYCONTROLPOINTS[parseInt(valorMayor)].color,MYCONTROLPOINTS[i].color);
+                                                                     //Actualizamos los valores
+                                                                     MYCONTROLPOINTS.splice(i,1);
+                                                                     var VArrayControlPointss=new Array();
+                                                                     var theMainScScalenumber=MENOS_INFINITO;
+                                                                     MYCONTROLPOINTS.forEach(function(d,i){
+                                                                         VArrayControlPointss[i]=[parseFloat(d.x),parseFloat(d.y)];
 
-                                                    if(Math.abs(d.x)>theMainScScalenumber){theMainScScalenumber=Math.abs(d.x);}
-                                                    if(Math.abs(d.y)>theMainScScalenumber){theMainScScalenumber=Math.abs(d.y);}
+                                                                         if(Math.abs(d.x)>theMainScScalenumber){theMainScScalenumber=Math.abs(d.x);}
+                                                                         if(Math.abs(d.y)>theMainScScalenumber){theMainScScalenumber=Math.abs(d.y);}
 
-                                                    });
-                                                osDados.forEach(function(dado){
-                                                    dado.valores[parseInt(valorMayor)]=parseFloat((dado.valores[parseInt(valorMayor)]+dado.valores[i])/2.0);
-                                                    //finalmente eliminamos de los valores
-                                                    dado.valores.splice(i,1);
-                                                    var Aux=STARCOORDINATESFor_Point(dado.valores,VArrayControlPointss);
-                                                    dado.xStar=Aux[0];
-                                                    dado.yStar=Aux[1];
-                                                    if(Math.abs(Aux[0])>theMainScScalenumber){theMainScScalenumber=Math.abs(Aux[0]);}
-                                                     if(Math.abs(Aux[1])>theMainScScalenumber){theMainScScalenumber=Math.abs(Aux[1]);}
+                                                                         });
+                                                                     osDados.forEach(function(dado){
+                                                                         dado.valores[parseInt(valorMayor)]=parseFloat((dado.valores[parseInt(valorMayor)]+dado.valores[i])/2.0);
+                                                                         //finalmente eliminamos de los valores
+                                                                         dado.valores.splice(i,1);
+                                                                         var Aux=STARCOORDINATESFor_Point(dado.valores,VArrayControlPointss);
+                                                                         dado.xStar=Aux[0];
+                                                                         dado.yStar=Aux[1];
+                                                                         if(Math.abs(Aux[0])>theMainScScalenumber){theMainScScalenumber=Math.abs(Aux[0]);}
+                                                                          if(Math.abs(Aux[1])>theMainScScalenumber){theMainScScalenumber=Math.abs(Aux[1]);}
 
-                                                });
+                                                                     });
 
-                                            //	xStarCoordinates.domain([-1*theMainScScalenumber,theMainScScalenumber]);
-                                             //                               yStarCoordinates.domain([-1*theMainScScalenumber,theMainScScalenumber]);
-                                                refreshControlPoints(); //
-                                                restartNewPoints(); //Actualizamos las listas de ListaDeAtributos y lista de Grupos de dimensiones
-                                                resto(); //EVALUAR, NO ES NECESARIO REALIZAR DE NUEVO ESTA OPERACION--0000000000000000000000000000000000000000
-                                            }
-                                        }
-                                      }else{
+                                                                 //	xStarCoordinates.domain([-1*theMainScScalenumber,theMainScScalenumber]);
+                                                                  //                               yStarCoordinates.domain([-1*theMainScScalenumber,theMainScScalenumber]);
+                                                                     refreshControlPoints(); //
+                                                                     restartNewPoints(); //Actualizamos las listas de ListaDeAtributos y lista de Grupos de dimensiones
+                                                                     resto(); //EVALUAR, NO ES NECESARIO REALIZAR DE NUEVO ESTA OPERACION--0000000000000000000000000000000000000000
+                                                                 }
+                                                             }
+                                                           }
+                                                           //else{
+                                                             //       console.log(d);
 
-                                                 var clickX =xStarCoordinates.invert(d3.event.clientX); //(d3.event.clientX); //posicion del puntero
-                                                 var clickY =yStarCoordinates.invert(d3.event.clientY); //(d3.event.clientY);
-                                                 clickX=xStarCoordinates(clickX);
-                                                 clickY=yStarCoordinates(clickY);
-                                                 console.log("estos son los puntos del puntero:"+d3.event.clientX+"   -   "+d3.event.clientY);
-                                                //  console.log("estos son los puntos del puntero:"+evt.clientX+"   -   "+evt.clientY);
-                                                 /*los puntos del centro*/
-                                                 var xx=xStarCoordinates(d.x);
-                                                 var yy=yStarCoordinates(d.y);
-                                                  console.log("PUNTO:"+xx+"   -   "+yy);
+                                                           //}
+                                                         });
 
-
-
-                                                  var distance=Math.sqrt((xx-clickX)*(xx-clickX)+(yy-clickY)*(yy-clickY));
-                                                  console.log("distancia:"+distance+" el radio:"+CpScale(d.valores.length));
-
-                                                  if(distance<CpScale(d.valores.length)){
-                                                         DeleteDimensions(d,i);
-                                                         d3.event.stopPropagation();
-                                                  }
-                                                    //d.x=xStarCoordinates.invert(Math.max(6, Math.min(SIZEMAINPROJECTION - tolerancia , d3.event.x)));
-                                                    //return xStarCoordinates(d.x);//Math.max(6, Math.min(size - tolerancia , d3.event.x));
-
-                                      /*
-
-                                                coordinates = d3.mouse(this);
-                                                var x = coordinates[0];
-                                                var y = coordinates[1];
-                                                console.log("ESTOS SON LOS PUNTOS:"+x+" - "+y);*/
-
-                                               /*       var punto=MYCONTROLPOINTS[i];
-                                                      var xx=xStarCoordinates(d.x);
-                                                      var yy=yStarCoordinates(d.y);
-
-                                                var valorMayor;
-                                                //recorremos los puntos de control para ver si hay interseccion
-                                                MYCONTROLPOINTS.forEach(function(c,j){
-                                                    if(j!=i){
-                                                        var xAux=xStarCoordinates(c.x);
-                                                        var yAux=yStarCoordinates(c.y);
-                                                        //hallamos la distacia=
-                                                        var distance=Math.sqrt((xx-xAux)*(xx-xAux)+(yy-yAux)*(yy-yAux));
-                                                        //console.log("distancia:"+distance+" el radio:"+CpScale(c.valores.length));
-                                                        if(distance<CpScale(c.valores.length)){
-                                                            valorMayor=j;
-                                                        }
-                                                    }
-                                                });*/
-                                               // if(parseInt(valorMayor)>=0){
-
-                                               //}
-                                      }
-                                    });
                                     //resto();
                                  var SCMenorX=MAS_INFINITO;
                                   var SCMayorX=MENOS_INFINITO;
@@ -632,6 +590,7 @@
                              .attr("r",function(d){return CpScale(d.valores.length);})
                              .attr("fill",function(d,i){return d.color;})
                              .on("mouseover",mouseover)
+                              .on("mousedown",mousedown)
                              .on("mouseout",mouseout)
                              .call(d3.behavior.drag()
                                 .on("dragstart",dragstart)
@@ -765,14 +724,21 @@
 
                 }
                function mouseout() {
-                               /* div.transition()
+                                div.transition()
                                     .duration(500)
                                     .style("opacity", 0);
 
                                     divSecondDetail.transition()
                                     .duration(500)
-                                    .style("opacity", 0);*/
+                                    .style("opacity", 0);
                 }
+
+               function mousedown(d,i){
+                    if(d3.event.button == 0){ }else{
+                        DeleteDimensions(d,i);
+                        d3.event.stopPropagation();
+                    }
+               }
 
                 function resto(){
 
@@ -1197,6 +1163,7 @@
                          .attr("r",8)
                          .attr("fill",function(d,i){return d.color})
                          .on("mouseover",mouseoverSecond)
+
                         .on("mouseout",mouseOUTSecond)
                          .call(d3.behavior.drag()
                             .on("dragstart",DragStarSecond)
@@ -2246,7 +2213,7 @@
                                 promedio=parseFloat(promedio)+parseFloat(GENERALMATRIX.rows[i].valores[parseInt(MYCONTROLPOINTS[FocusControlPointIndex].valores[ind].indice)]);
                             });
                             var promedioNO=0;
-                            indiceNo.forEach(function(ind){ //promedio de los no marcados
+                                indiceNo.forEach(function(ind){ //promedio de los no marcados
                                 promedioNO=parseFloat(promedioNO)+parseFloat(GENERALMATRIX.rows[i].valores[parseInt(MYCONTROLPOINTS[FocusControlPointIndex].valores[ind].indice)]);
                             });
                         //promedio=parseFloat(promedio/indices.length);
@@ -2294,6 +2261,7 @@
                         });*/
                         //Actualizamos el nuevo Arreglo;
                         MYCONTROLPOINTS[FocusControlPointIndex].valores=controlAux;
+
 
                        // MYCONTROLPOINTS[FocusControlPointIndex].id=textoAux;
                        // MYCONTROLPOINTS[FocusControlPointIndex].text=textoAux;
@@ -2378,10 +2346,10 @@
                                 d.valores.push(parseFloat(promedio/parseFloat(indices.length)));
                             });
                             //eliminamos los valores del punto de control
-                            var id="";
+                            var id="Group_"+HallarMaximoIndiceGrupos();
                             var newColor="#fff";
                             valoresDeleted.forEach(function(ind){
-                                id+="|"+ind.text;
+                               // id+="|"+ind.text;
                                 newColor=ConcatColor(ind.color,newColor);
                             });
 

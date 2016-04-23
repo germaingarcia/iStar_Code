@@ -34,12 +34,16 @@ function getMaxOfArray(numArray) {
 }
 
 function HallarMaximoIndiceGrupos(){
+
     var arreglo=new Array();
     MYCONTROLPOINTS.forEach(function(d){
-        if(d.id.indexOf("Group")>-1){
+
+        if(d.id.toString().indexOf("Group")>-1){
             arreglo.push(parseInt(d.id.substring(6, d.id.length)));
         }
     });
-
+    if(arreglo.length>0){
     return parseInt(getMaxOfArray(arreglo))+1;
+    }
+    else{return 1;}
 }
