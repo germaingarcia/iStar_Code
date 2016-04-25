@@ -2331,6 +2331,7 @@
                                 count++;
                                 indices.push(i);
                                 valoresDeleted.push(ListOfRemovedDimensions[i]);
+
                             }else{
                                 ListOfDimensionsRemovedAux.push(ListOfRemovedDimensions[i]);
                             }
@@ -2390,12 +2391,12 @@
             valores.forEach(function(d){
                 color=ConcatColor(color,d.color)
             });
-            ListOfGroupsOfDimensions.push({"indice":text,"text":text,"valores":valores,"color":color});}
+
+            var id=HallarMaximoIndiceGrupos();
+            ListOfGroupsOfDimensions.push({"indice":"Group_"+id,"text":"Group_"+id,"valores":valores,"color":color});}
             llenar_CheckBox(LISTOFDIMENSIONS,"myTable","ATTRIBUTES","checkbox");
             llenar_CheckBox(ListOfGroupsOfDimensions,"myTableLeft","ATTRIBUTES2","checkbox2");
-           // if(osDados.length>0){
-           //   StarCoordinatesFunction(false);
-          //  }
+
           var misGrupos=new Array()
            misGrupos=misGrupos.concat(LISTOFDIMENSIONS,ListOfGroupsOfDimensions); //cinjunto de puntos de control inicial
            MYCONTROLPOINTS=new Array();
