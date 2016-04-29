@@ -8,6 +8,7 @@ function DataColor(index,Lon){
     return color[index];
 }
 
+/*
 function ControlPointColor(index,Lon){
 //index=index0;
     if(index>FirstPalette.length){
@@ -18,6 +19,18 @@ function ControlPointColor(index,Lon){
       //  index=parseInt(index%FirstPalette.length);
     }
     return FirstPalette[index];
+}*/
+
+function ControlPointColor(index,Lon){
+//index=index0;
+    if(index>manual.length){
+        var colorSCALE = d3.scale.linear()
+        		.domain([manual.length,parseInt((manual.length+Lon)/2) ,Lon])
+        		.range(["red","blue","green"]);
+        		return colorSCALE(index);
+        index=parseInt(index%FirstPalette.length);
+    }
+    return manual[index];
 }
 
 function SecondControPointColor(index,Lon){
@@ -774,3 +787,40 @@ var color=[
 "#cbd5e8",
 "#8da0cb",
 "#bebada"];
+
+var manual=["#d32f2f",
+"#c62828",
+"#b71c1c",
+"#512da8",
+"#4527a0",
+"#311b92",
+"#0288d1",
+"#0277bd",
+"#01579b",
+"#388e3c",
+"#2e7d32",
+"#1b5e20",
+"#fff176",
+"#ffee58",
+"#ffeb3b",
+"#ffff00",
+"#ffea00",
+"#ffd600",
+"#e64a19",
+"#d84315",
+"#bf360c",
+"#6d4c41",
+"#5d4037",
+"#4e342e",
+"#eeff41",
+"#c6ff00",
+"#aeea00",
+"#00796b",
+"#00695c",
+"#004d40",
+"#e040fb",
+"#d500f9",
+"#aa00ff",
+"#ff4081",
+"#f50057",
+"#c51162"];

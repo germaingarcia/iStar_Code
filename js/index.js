@@ -143,7 +143,7 @@
                             if(Math.abs(Aux[0])>theMainScScalenumber){theMainScScalenumber=Math.abs(Aux[0]);}
                             if(Math.abs(Aux[1])>theMainScScalenumber){theMainScScalenumber=Math.abs(Aux[1]);}
 
-                            osDados.push({"id":"cp"+d.id,"klasses":d.klass,"valores":GroupValores,"xStar":Aux[0],"yStar":Aux[1]});
+                            osDados.push({"id":d.id,"klasses":d.klass,"valores":GroupValores,"xStar":Aux[0],"yStar":Aux[1]});
              });
             //------------------------------------INSERTAR LO QUE ESTA COMENTADO ------------------------------
             DistanceMatrixMainProjectionFunction(osDados);
@@ -188,21 +188,29 @@
                                 .x(xStarCoordinates)
                                 .y(yStarCoordinates)
                                 .on("brushstart",function(){
+                                 //   estados(GENERALMATRIX,'wiggle');
                                     BrushStar.clear();
                                     clearALLTable("tableDetail");
-                                                    panel.selectAll("circle")
+
+
+                                                    STAR.selectAll("circle")
                                                     .attr("class","circle")
                                                     .attr("stroke",ColordeDato)
                                                         .attr("stroke-width",strokeData);
 
+
                                                     SecondDetail.selectAll("circle")
                                                     .attr("class","circle")
                                                     .attr("stroke",ColordeDato)
-                                                                                                    .attr("stroke-width",strokeData);
+                                                     .attr("stroke-width",strokeData);
+
+
 
                                                             })
-                                    .on("brush",function(){
-                                        panel.selectAll("circle")
+                                  .on("brush",function(){
+                                    NPDIV.selectAll("*").remove();
+                                        // estados(GENERALMATRIX,'wiggle');
+                                        STAR.selectAll("circle")
                                         .attr("class",function(d){
                                                     if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
                                                             d.drag=1;
@@ -214,7 +222,8 @@
                                                     }
                                                     })
                                         .attr("stroke",ColordeDato)
-                                                                                        .attr("stroke-width",strokeData);
+                                        .attr("stroke-width",strokeData);
+
                                         SecondDetail.selectAll("circle")
                                         .attr("class",function(d){
                                                 if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
@@ -226,9 +235,15 @@
                                         )
                                         .attr("stroke",ColordeDato)
                                                                                         .attr("stroke-width",strokeData);
+
+
+
                                     })
                                     .on("brushend",function(){
+                                     estados(GENERALMATRIX,'wiggle');
                                         clearALLTable("tableDetail");
+
+
                                     });
 
                     //Llamada de Brush
@@ -236,7 +251,7 @@
                     .attr("class", "brush")
                     .call(BrushStar);
 
-                            console.log(MYCONTROLPOINTS);
+
 
                              STAR.selectAll(".star_points")
                             .data(osDados)
@@ -964,7 +979,7 @@
                             .y(yStarCoordinatesSecondDetail)
                             .on("brushstart",function(){
                                 BrushStarSecond.clear();
-                                            panel.selectAll("circle")
+                                            STAR.selectAll("circle")
                                             .attr("class","circle");
 
                                             SecondDetail.selectAll("circle")
@@ -972,7 +987,9 @@
 
                                                         })
                                 .on("brush",function(){
-                                    panel.selectAll("circle")
+                                NPDIV.selectAll("*").remove();
+                                                                        // estados(GENERALMATRIX,'wiggle');
+                                    STAR.selectAll("circle")
                                     .attr("class",function(d){
                                                 if ( BrushStarSecond.isWithinExtent(xStarCoordinatesSecondDetail(d.xStarSecondDetail), yStarCoordinatesSecondDetail(d.yStarSecondDetail))) {
                                                         d.drag=1;
@@ -993,6 +1010,7 @@
                                     );
                                 })
                                 .on("brushend",function(){
+                                estados(GENERALMATRIX,'wiggle');
                                 });
 
 
@@ -1024,8 +1042,8 @@
                                          }
                              function DragSecond(){
                                             d3.select(this)
-                                     .attr("class","Selected")
-                                                                 .attr("cx",function(d){
+                                            .attr("class","Selected")
+                                            .attr("cx",function(d){
                                             d.x=xStarCoordinatesSecondDetail.invert(Math.max(8, Math.min(SIZESECONDPROJECTION , d3.event.x)));
                                                                         return xStarCoordinatesSecondDetail(d.x);//Math.max(6, Math.min(size - tolerancia , d3.event.x));
                                                                                             })
@@ -2001,16 +2019,6 @@
                     .attr("width", NP_width)
                     .attr("height", NP_height);*/
 
-                    var selection = NPDIV.selectAll(".series")
-                  .data(seriesArr)
-                  .enter().append("g")
-                    .attr("class", "series");
-
-                    selection.append("path")
-                  .attr("class", "streamPath")
-                  .attr("d", function (d) { return area(d.values); })
-                  .style("fill", function (d) { return color(d.name); })
-                  .style("stroke", "#007095");
 
 
                   var points = NPDIV.selectAll(".seriesPoints")
@@ -2026,10 +2034,8 @@
                    .attr("cy", function (d) { return ySixth(d.y0 + d.y); })
                    .attr("r", "4px")
                    .attr("stroke","#007095")
-
                    .attr("opacity","1")
                    .style("fill",function (d) { return color(d.name); })
-
                    .on("mouseover", function (d) {
                              $(this).popover({
                               title: d.label,
@@ -2050,7 +2056,19 @@
                     .on("click", function(d,i) {
                                 ProyectarEstado(d.label);
                                 //alert(d.label);
-                                              });
+                      });
+
+
+                    var selection = NPDIV.selectAll(".series")
+                  .data(seriesArr)
+                  .enter().append("g")
+                    .attr("class", "series");
+
+                    selection.append("path")
+                  .attr("class", "streamPath")
+                  .attr("d", function (d) { return area(d.values); })
+                  .style("fill", function (d) { return color(d.name); })
+                  .style("stroke", "#007095");
       }
       function ProyectarEstado(indice){
                 //var misGrupos=new Array()

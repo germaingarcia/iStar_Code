@@ -167,7 +167,7 @@ STAR.append("rect")
         				.y(yStarCoordinates)
         				.on("brushstart",function(){
         					BrushStar.clear();
-        									panel.selectAll("circle")
+        									STAR.selectAll("circle")
         									.attr("class","circle");
 
         									SecondDetail.selectAll("circle")
@@ -175,7 +175,7 @@ STAR.append("rect")
 
         											})
         					.on("brush",function(){
-        						panel.selectAll("circle")
+        						STAR.selectAll("circle")
         						.attr("class",function(d){
         									if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
         											return "circle";
@@ -784,7 +784,7 @@ function renderSecondDetail(d){
 						.y(yStarCoordinatesSecondDetail)
 						.on("brushstart",function(){
 							BrushStarSecond.clear();
-										panel.selectAll("circle")
+										STAR.selectAll("circle")
 										.attr("class","circle");
 
 										SecondDetail.selectAll("circle")
@@ -792,7 +792,7 @@ function renderSecondDetail(d){
 
 													})
 							.on("brush",function(){
-								panel.selectAll("circle")
+								STAR.selectAll("circle")
 								.attr("class",function(d){
 											if ( BrushStarSecond.isWithinExtent(xStarCoordinatesSecondDetail(d.xStarSecondDetail), yStarCoordinatesSecondDetail(d.yStarSecondDetail))) {
 													return "circle";
