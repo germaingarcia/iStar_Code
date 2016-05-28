@@ -208,7 +208,7 @@
 
                                                             })
                                   .on("brush",function(){
-                                    NPDIV.selectAll("*").remove();
+                                       // NPDIV.selectAll("*").remove();
                                         // estados(GENERALMATRIX,'wiggle');
                                         STAR.selectAll("circle")
                                         .attr("class",function(d){
@@ -240,7 +240,7 @@
 
                                     })
                                     .on("brushend",function(){
-                                     estados(GENERALMATRIX,'wiggle');
+                                      // estados(GENERALMATRIX,'wiggle');
                                         clearALLTable("tableDetail");
 
 
@@ -987,7 +987,7 @@
 
                                                         })
                                 .on("brush",function(){
-                                NPDIV.selectAll("*").remove();
+                               // NPDIV.selectAll("*").remove();
                                                                         // estados(GENERALMATRIX,'wiggle');
                                     STAR.selectAll("circle")
                                     .attr("class",function(d){
@@ -1010,7 +1010,7 @@
                                     );
                                 })
                                 .on("brushend",function(){
-                                estados(GENERALMATRIX,'wiggle');
+                                    // estados(GENERALMATRIX,'wiggle');
                                 });
 
 
@@ -1926,150 +1926,142 @@
     }
 
 
-      function BuildMetrics(){
-        //Optimizacion(MycontrolPoints1,osDados);
-        if(DistanceMatrixGeneralMatrixOriginal.length==0){  MakeDistanceMatrixGeneralMatrixOriginal();}
-         DistanceMatrixMainProjectionFunction(osDados);
+       function BuildMetrics(){
+          //Optimizacion(MycontrolPoints1,osDados);
+          if(DistanceMatrixGeneralMatrixOriginal.length==0){  MakeDistanceMatrixGeneralMatrixOriginal();}
+           DistanceMatrixMainProjectionFunction(osDados);
 
-        var ratio;
-        if(klasesIndices.length>1){
-          ratio=IndiceDum(osDados,klasesIndices);
-         }else
-         {
-         ratio=0.0001;
-         }
-              var topologica=PreservacionTopologica([30,40]);
-                           //console.log("topologica: "+topologica);
-                           //console.log("ratio: "+ratio);
-                           //document.getElementById("ratio").value = ratio;
+          var ratio;
+          if(klasesIndices.length>1){
+            ratio=IndiceDum(osDados,klasesIndices);
+           }else
+           {
+           ratio=0.0001;
+           }
+          	  var topologica=PreservacionTopologica([30,40]);
+          				   //console.log("topologica: "+topologica);
+          				   //console.log("ratio: "+ratio);
+          				   //document.getElementById("ratio").value = ratio;
 
-                             // LABEL PARA PONER LOS VALORES
-                             var h = document.getElementById("ratio");  					 // Create a <h1> element
-                             while ( h.firstChild ) h.removeChild( h.firstChild );
-                            var t1 = document.createTextNode("Topology: "+topologica+"  - Dunn: "+ratio );     // Create a text node
+          				     var h = document.getElementById("ratio");  					 // Create a <h1> element
+          					 while ( h.firstChild ) h.removeChild( h.firstChild );
+          					var t1 = document.createTextNode("Topology: "+topologica+"  - Dunn: "+ratio );     // Create a text node
+          				//	var t2 = document.createTextNode("Siluette: "+ratio);     // Create a text node
+          					h.appendChild(t1);
+          			//		h.appendChild(t2);
+          	/*GUARDAMOS HISTORIAL DE LAS POSICIONES*/
+          	var copiaSeguridad=cloneObject(MYCONTROLPOINTS);
+             //MYCONTROLPOINTS.forEach(function(d){
+                //  var a=d;
+              //    copiaSeguridad.push(a);
+            // });
+             HISTORIALESTADOS.push({"id":HISTORIALESTADOS.length,"topology":topologica,"dunn":ratio,"controlpoints":copiaSeguridad,"values":[ratio,topologica]});
+             //SaveStates('zero');
+             estados(GENERALMATRIX,'wiggle');
 
-                            h.appendChild(t1);
+        }
 
+        function estados(newMatrix,offset){
+                      NPDIV.selectAll("*").remove();
+                      var valores=["Dunn","Topology"];
+                      var xSixth = d3.scale.ordinal().rangeRoundBands([0, NP_width], .1);
+              		var ySixth = d3.scale.linear().rangeRound([NP_height,0]);
 
+              		var stack = d3.layout.stack()
+                      .values(function (d) { return d.values; })
+                      .x(function (d) { return xSixth(d.label) + xSixth.rangeBand() / 2; })
+                      .y(function (d) { return d.value; });
 
-                        //	var t2 = document.createTextNode("Siluette: "+ratio);     // Create a text node
+              		 var area = d3.svg.area()
+                      .interpolate("cardinal")
+                      .x(function (d)  { return xSixth(d.label) + xSixth.rangeBand() / 2; })
+                      .y0(function (d) { return ySixth(d.y0); })
+                      .y1(function (d) { return ySixth(d.y0 + d.y); });
 
-                    //		h.appendChild(t2);
-            /*GUARDAMOS HISTORIAL DE LAS POSICIONES*/
-            var copiaSeguridad=cloneObject(MYCONTROLPOINTS);
-            var copiaSeguridadEliminados=cloneObject(ListOfRemovedDimensions);
-           //MYCONTROLPOINTS.forEach(function(d){
-              //  var a=d;
-            //    copiaSeguridad.push(a);
-          // });
-           HISTORIALESTADOS.push({"id":HISTORIALESTADOS.length,"topology":topologica,"dunn":ratio,"controlpoints":copiaSeguridad,"values":[ratio,topologica],"deleted":copiaSeguridadEliminados});
-           //SaveStates('zero');
-           estados(GENERALMATRIX,'wiggle');
-
-      }
-
-      function estados(newMatrix,offset){
-                    NPDIV.selectAll("*").remove();
-                    var valores=["Dunn","Topology"];
-                    var xSixth = d3.scale.ordinal().rangeRoundBands([0, NP_width], .1);
-                    var ySixth = d3.scale.linear().rangeRound([NP_height,0]);
-
-                    var stack = d3.layout.stack()
-                    .values(function (d) { return d.values; })
-                    .x(function (d) { return xSixth(d.label) + xSixth.rangeBand() / 2; })
-                    .y(function (d) { return d.value; });
-
-                     var area = d3.svg.area()
-                    .interpolate("cardinal")
-                    .x(function (d)  { return xSixth(d.label) + xSixth.rangeBand() / 2; })
-                    .y0(function (d) { return ySixth(d.y0); })
-                    .y1(function (d) { return ySixth(d.y0 + d.y); });
-
-                     var seriesArr = [], series = {};
-                     valores.forEach(function (name,i) {
-                     series[name] = {name: name, values:[]};
-                     seriesArr.push(series[name]);
-                    });
+              		 var seriesArr = [], series = {};
+              		 valores.forEach(function (name,i) {
+              		 series[name] = {name: name, values:[]};
+              		 seriesArr.push(series[name]);
+              		});
 
 
-                     HISTORIALESTADOS.forEach(function (d,i) {
-                        valores.map(function (name,j) {
-                            series[name].values.push({name: name, label: d.id, value: +parseFloat(d.values[j])});
-                        });
-                    });
+              		 HISTORIALESTADOS.forEach(function (d,i) {
+              		    valores.map(function (name,j) {
+              			    series[name].values.push({name: name, label: d.id, value: +d.values[j]});
+              			});
+              		});
 
 
-                     xSixth.domain(HISTORIALESTADOS.map(function (d) { return d.id; }));
+              		 xSixth.domain(HISTORIALESTADOS.map(function (d) { return d.id; }));
 
-                    stack.offset(offset)
-                    stack(seriesArr);
+              		stack.offset(offset)
+              		stack(seriesArr);
 
-                    ySixth.domain([0, d3.max(seriesArr, function (c) {
-                        return d3.max(c.values, function (d) { return d.y0 + d.y; });
-                    })]);
+              		ySixth.domain([0, d3.max(seriesArr, function (c) {
+              			return d3.max(c.values, function (d) { return d.y0 + d.y; });
+              		})]);
 
-                    var color = d3.scale.ordinal()
-                   .range(["#604715","#F2B236","#024E66","#01CFFE","#952500","#955600","#4B1424","#144B3B","#109618","#475003","#f0a417", "#b00d08","#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00","#001c9c","#101b4d","#475003","#9c8305","#d3c47c"]);
+              		var color = d3.scale.ordinal()
+                     .range(["#604715","#F2B236","#024E66","#01CFFE","#952500","#955600","#4B1424","#144B3B","#109618","#475003","#f0a417", "#b00d08","#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00","#001c9c","#101b4d","#475003","#9c8305","#d3c47c"]);
 
-    /*
-                    NPDIV.append("rect")
-                    .attr("class","frame")
-                    .attr("x", tolerancia / 2)
-                    .attr("y", tolerancia/ 2)
-                    .attr("width", NP_width)
-                    .attr("height", NP_height);*/
+      /*
+              		NPDIV.append("rect")
+              		.attr("class","frame")
+              		.attr("x", tolerancia / 2)
+              		.attr("y", tolerancia/ 2)
+              		.attr("width", NP_width)
+              		.attr("height", NP_height);*/
 
+              		var selection = NPDIV.selectAll(".series")
+                    .data(seriesArr)
+                    .enter().append("g")
+                      .attr("class", "series");
 
-
-                  var points = NPDIV.selectAll(".seriesPoints")
-                  .data(seriesArr)
-                  .enter().append("g")
-                  .attr("class", "seriesPoints");
-
-                 points.selectAll(".point")
-                   .data(function (d) { return d.values; })
-                   .enter().append("circle")
-                   .attr("class", "point")
-                   .attr("cx", function (d) { return xSixth(d.label) + xSixth.rangeBand() / 2; })
-                   .attr("cy", function (d) { return ySixth(d.y0 + d.y); })
-                   .attr("r", "4px")
-                   .attr("stroke","#007095")
-                   .attr("opacity","1")
-                   .style("fill",function (d) { return color(d.name); })
-                   .on("mouseover", function (d) {
-                             $(this).popover({
-                              title: d.label,
-                              placement: 'auto top',
-                              container: 'body',
-                              trigger: 'manual',
-                              html : true,
-                              content: function() {
-                                return d.name +
-                                       "<br/>Value: " + d3.format(",")(d.value ? d.value.toFixed(4): (d.y1 - d.y0).toFixed(4)); }
-                            });
-                            $(this).popover('show')
-                    })
-                    .on("mouseout",  function (d) {$('.popover').each(function() {
-                                                          $(this).remove();
-                                                        });
-                    })
-                    .on("click", function(d,i) {
-                                ProyectarEstado(d.label);
-                                //alert(d.label);
-                      });
+              		selection.append("path")
+                    .attr("class", "streamPath")
+                    .attr("d", function (d) { return area(d.values); })
+                    .style("fill", function (d) { return color(d.name); })
+                    .style("stroke", "grey");
 
 
-                    var selection = NPDIV.selectAll(".series")
-                  .data(seriesArr)
-                  .enter().append("g")
-                    .attr("class", "series");
+              	  var points = NPDIV.selectAll(".seriesPoints")
+                    .data(seriesArr)
+                    .enter().append("g")
+                    .attr("class", "seriesPoints");
 
-                    selection.append("path")
-                  .attr("class", "streamPath")
-                  .attr("d", function (d) { return area(d.values); })
-                  .style("fill", function (d) { return color(d.name); })
-                  .style("stroke", "#007095");
-      }
+                   points.selectAll(".point")
+                     .data(function (d) { return d.values; })
+                     .enter().append("circle")
+                     .attr("class", "point")
+                     .attr("cx", function (d) { return xSixth(d.label) + xSixth.rangeBand() / 2; })
+                     .attr("cy", function (d) { return ySixth(d.y0 + d.y); })
+                     .attr("r", "4px")
+                     .attr("fill","black")
+              	   .attr("opacity","1")
+                     .style("fill",function (d) { return color(d.name); })
+
+                     .on("mouseover", function (d) {
+              				 $(this).popover({
+              				  title: d.label,
+              				  placement: 'auto top',
+              				  container: 'body',
+              				  trigger: 'manual',
+              				  html : true,
+              				  content: function() {
+              					return "Attr: " + d.name +
+              						   "<br/>Value: " + d3.format(",")(d.value ? d.value.toFixed(4): (d.y1 - d.y0).toFixed(4)); }
+              				});
+              				$(this).popover('show')
+              		})
+                      .on("mouseout",  function (d) {$('.popover').each(function() {
+              											  $(this).remove();
+              											});
+              		})
+              		.on("click", function(d,i) {
+              		            ProyectarEstado(d.label);
+                                  //alert(d.label);
+                                                });
+        }
       function ProyectarEstado(indice){
                 //var misGrupos=new Array()
                     // misGrupos=misGrupos.concat(LISTOFDIMENSIONS,ListOfGroupsOfDimensions); //cinjunto de puntos de control inicial
