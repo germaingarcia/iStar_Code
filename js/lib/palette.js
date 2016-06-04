@@ -20,6 +20,46 @@ function ControlPointColor(index,Lon){
     }
     return FirstPalette[index];
 }*/
+function arregloInterpolado(numero,color1,color2){
+    var coloresRespuesta=new Array();
+    console.log("numero: "+numero+" color1 "+color1+" color2: "+color2);
+    var colorSCALE = d3.scale.linear()
+            		.domain([0,numero])
+            		.range([color1,color2]);
+      console.log("colorResultado: "+colorSCALE(1));
+    for(j=0;j<parseFloat(numero);j++){
+        coloresRespuesta.push(colorSCALE(j));
+    }
+    coloresRespuesta.push(color2);
+    return coloresRespuesta;
+}
+
+function GetControlPointsColor(lenghtControPoint){
+
+    var respuestaArreglo=new Array();
+    var arregloColores=FirstPalette;
+    if(arregloColores.length>lenghtControPoint){
+
+        var xinterpolation=d3.scale.linear().domain([0,lenghtControPoint]).range([ 0,arregloColores.length]);
+        for(i=0;i<lenghtControPoint;i++){
+            console.log(parseInt(xinterpolation(i)));
+            respuestaArreglo.push(arregloColores[parseInt(xinterpolation(i))]);
+        }
+    }else{
+        var numero= Math.ceil(parseFloat(lenghtControPoint)/parseFloat(arregloColores.length));
+        for(i=0;i<arregloColores.length-1;i++){
+            console.log("numero :"+numero);
+            var arreglo=arregloInterpolado(numero, arregloColores[i],arregloColores[i+1]);
+            arreglo.forEach(function(d){
+                respuestaArreglo.push(d);
+            });
+           // respuestaArreglo.push(arregloColores[i+1]);
+        }
+    }
+    console.log(respuestaArreglo);
+    return respuestaArreglo;
+
+}
 
 function ControlPointColor(index,Lon){
 //index=index0;
@@ -789,38 +829,38 @@ var color=[
 "#bebada"];
 
 var manual=["#d32f2f",
-"#c62828",
-"#b71c1c",
-"#512da8",
-"#4527a0",
-"#311b92",
-"#0288d1",
-"#0277bd",
-"#01579b",
-"#388e3c",
-"#2e7d32",
-"#1b5e20",
-"#fff176",
-"#ffee58",
-"#ffeb3b",
-"#ffff00",
-"#ffea00",
-"#ffd600",
-"#e64a19",
-"#d84315",
-"#bf360c",
-"#6d4c41",
-"#5d4037",
-"#4e342e",
-"#eeff41",
-"#c6ff00",
-"#aeea00",
-"#00796b",
-"#00695c",
-"#004d40",
-"#e040fb",
-"#d500f9",
-"#aa00ff",
-"#ff4081",
-"#f50057",
-"#c51162"];
+           "#c62828",
+           "#b71c1c",
+           "#512da8",
+           "#4527a0",
+           "#311b92",
+           "#0288d1",
+           "#0277bd",
+           "#01579b",
+           "#388e3c",
+           "#2e7d32",
+           "#1b5e20",
+           "#fff176",
+           "#ffee58",
+           "#ffeb3b",
+           "#ffff00",
+           "#ffea00",
+           "#ffd600",
+           "#e64a19",
+           "#d84315",
+           "#bf360c",
+           "#6d4c41",
+           "#5d4037",
+           "#4e342e",
+           "#eeff41",
+           "#c6ff00",
+           "#aeea00",
+           "#00796b",
+           "#00695c",
+           "#004d40",
+           "#e040fb",
+           "#d500f9",
+           "#aa00ff",
+           "#ff4081",
+           "#f50057",
+           "#c51162"];

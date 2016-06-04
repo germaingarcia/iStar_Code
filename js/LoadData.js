@@ -61,9 +61,12 @@
 	  //cargamos los datos
 	  GENERALMATRIX.ConvertDataFromArray(rows);
 //      console.log(GENERALMATRIX);
-
+      var ArrayColor=GetControlPointsColor(GENERALMATRIX.attributes.length);
+      console.log(ArrayColor);
 	  GENERALMATRIX.attributes.forEach(function(d,i){
-		   var color=ControlPointColor(i, GENERALMATRIX.attributes.length);
+
+		   //var color=ControlPointColor(i, GENERALMATRIX.attributes.length);
+		   var color=ArrayColor[i];
            var vi=[{"indice":i,"text":d,"color":color}]
 		   var c=[{"indice":i,"text":d,"color":color}];
 		  vi.valores=c;

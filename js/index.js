@@ -11,7 +11,7 @@
         NP_width= NP_width - marginNP.left - marginNP.right;
         NP_height= NP_height - marginNP.top - marginNP.bottom;
 
-    var ColordeDato="#000";
+    var ColordeDato="#fff";
     var strokeData=0.4;
     var ColordeControl="#000";
     var strokeControl=0.3;
@@ -19,7 +19,7 @@
     var focusY;
     /*---------------------------------------------------------------------------------------*/
     SIZEMAINPROJECTION=$("#maincontainer").width();
-    var contro=20;
+    var contro=0;//20;                                  //variable para regulat el tamaño de la ventana;
 
 
     SIZESECONDPROJECTION=$("#secondProj").width();
@@ -826,7 +826,7 @@
                         }
 
 
-              /* panel.append("text")
+               /*panel.append("text")
                         .attr("x", 10)
                                 .attr("y", SIZEMAINPROJECTION)
 
