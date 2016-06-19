@@ -42,13 +42,13 @@ function GetControlPointsColor(lenghtControPoint){
 
         var xinterpolation=d3.scale.linear().domain([0,lenghtControPoint]).range([ 0,arregloColores.length]);
         for(i=0;i<lenghtControPoint;i++){
-            console.log(parseInt(xinterpolation(i)));
+           // console.log(parseInt(xinterpolation(i)));
             respuestaArreglo.push(arregloColores[parseInt(xinterpolation(i))]);
         }
     }else{
         var numero= Math.ceil(parseFloat(lenghtControPoint)/parseFloat(arregloColores.length));
         for(i=0;i<arregloColores.length-1;i++){
-            console.log("numero :"+numero);
+            //console.log("numero :"+numero);
             var arreglo=arregloInterpolado(numero, arregloColores[i],arregloColores[i+1]);
             arreglo.forEach(function(d){
                 respuestaArreglo.push(d);
@@ -56,7 +56,7 @@ function GetControlPointsColor(lenghtControPoint){
            // respuestaArreglo.push(arregloColores[i+1]);
         }
     }
-    console.log(respuestaArreglo);
+  //  console.log(respuestaArreglo);
     return respuestaArreglo;
 
 }

@@ -841,7 +841,6 @@
                                 })
                                 .text("ControlPointsView");*/
 
-
                 function translateControlPoints(){
                     STAR.selectAll("#cp").remove();
                     STAR.selectAll("line").remove();
@@ -1938,17 +1937,16 @@
            {
            ratio=0.0001;
            }
-          	  var topologica=PreservacionTopologica([30,40]);
+              var indi=document.getElementById('percentage').value;
+
+          	  var topologica=PreservacionTopologica([parseInt(indi),parseInt(indi)+10]);
           				   //console.log("topologica: "+topologica);
           				   //console.log("ratio: "+ratio);
           				   //document.getElementById("ratio").value = ratio;
+                            document.getElementById("topo").value = topologica.toFixed(4);
+                            document.getElementById("dunne").value = ratio.toFixed(4);
 
-          				     var h = document.getElementById("ratio");  					 // Create a <h1> element
-          					 while ( h.firstChild ) h.removeChild( h.firstChild );
-          					var t1 = document.createTextNode("Topology: "+topologica+"  - Dunn: "+ratio );     // Create a text node
-          				//	var t2 = document.createTextNode("Siluette: "+ratio);     // Create a text node
-          					h.appendChild(t1);
-          			//		h.appendChild(t2);
+
           	/*GUARDAMOS HISTORIAL DE LAS POSICIONES*/
           	var copiaSeguridad=cloneObject(MYCONTROLPOINTS);
              //MYCONTROLPOINTS.forEach(function(d){
@@ -2453,11 +2451,11 @@
 
         osDados.forEach(function(d,i){
             if(d.drag==1){
-            var id=[d.id];
-            var myArray=id.concat(GENERALMATRIX.rows[i].toArray(),[d.klasses]);
-            matrix.push(myArray);
+                var id=[d.id];
+                var myArray=id.concat(GENERALMATRIX.rows[i].toArray(),[d.klasses]);
+                matrix.push(myArray);
             }
         })
-
+        if(matrix.length>0){isDragged=true;}else{isDragged=false;}
         chargeTable(titulo,matrix,"tableDetail");
     }
