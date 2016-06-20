@@ -38,6 +38,7 @@
              .attr("width",SIZEMAINPROJECTION)
              .attr("height",SIZEMAINPROJECTION+parseInt(contro))
              .append("g");
+
     var STAR=panel.append("svg:g").attr("id","STAR")
                         .attr("transform",function(){return "translate("+0+","+0+")";});
 
@@ -189,8 +190,10 @@
                                 .y(yStarCoordinates)
                                 .on("brushstart",function(){
                                  //   estados(GENERALMATRIX,'wiggle');
-                                    BrushStar.clear();
-                                    clearALLTable("tableDetail");
+                                                    NPDIV.selectAll("*").remove();
+
+                                                    BrushStar.clear();
+                                                    clearALLTable("tableDetail");
 
 
                                                     STAR.selectAll("circle")
@@ -210,37 +213,37 @@
                                   .on("brush",function(){
                                        // NPDIV.selectAll("*").remove();
                                         // estados(GENERALMATRIX,'wiggle');
-                                        STAR.selectAll("circle")
-                                        .attr("class",function(d){
-                                                    if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
-                                                            d.drag=1;
-                                                            return "circle";
-                                                    } else {
-                                                     d.drag=0;
-                                                           return "no_selected";
+                                         STAR.selectAll("circle")
+                                         .attr("class",function(d){
+                                                     if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
+                                                             d.drag=1;
+                                                             return "circle";
+                                                     } else {
+                                                      d.drag=0;
+                                                            return "no_selected";
 
-                                                    }
-                                                    })
-                                        .attr("stroke",ColordeDato)
-                                        .attr("stroke-width",strokeData);
+                                                     }
+                                                     })
+                                         .attr("stroke",ColordeDato)
+                                         .attr("stroke-width",strokeData);
 
-                                        SecondDetail.selectAll("circle")
-                                        .attr("class",function(d){
-                                                if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
-                                                            return "circle";
-                                                    } else {
-                                                           return "no_selected";
-                                                    }
-                                            }
-                                        )
-                                        .attr("stroke",ColordeDato)
-                                                                                        .attr("stroke-width",strokeData);
+                                         SecondDetail.selectAll("circle")
+                                         .attr("class",function(d){
+                                                 if ( BrushStar.isWithinExtent(xStarCoordinates(d.xStar), yStarCoordinates(d.yStar))) {
+                                                             return "circle";
+                                                     } else {
+                                                            return "no_selected";
+                                                     }
+                                             }
+                                         )
+                                         .attr("stroke",ColordeDato)
+                                         .attr("stroke-width",strokeData);
 
 
 
                                     })
                                     .on("brushend",function(){
-                                      // estados(GENERALMATRIX,'wiggle');
+                                        estados(GENERALMATRIX,'wiggle');
                                         clearALLTable("tableDetail");
 
 

@@ -158,6 +158,13 @@
 			  $("#cover").css("display","none");
 	  });
 
+	  $("#cancelar2").click(function(){
+			 $("#panelTablaManual").css("display","none");
+	  });
+
+      $("#ManualOperations").click(function(){
+            $("#panelTablaManual").css("display","block");
+      });
 
       });
     </script>
@@ -270,11 +277,11 @@
             <hr/>
             <a id="Re_insert" class="button expand" style=" padding:1px; border-radius:25px;">Re_Insert</a>
             <div class=" row collapse" style="overflow-x: scroll; overflow-y: scroll;	height:300px; padding:4px">
-
+                <div class="large-12 columns">
                 <table id="myTableGroup" style="overflow-x: scroll; overflow-y: scroll;">
                   <thead>
                   <tr>
-                    <th style="width:100%">Group</th>
+                    <th style="width:100px">Group</th>
 
                   </tr>
                   </thead>
@@ -282,7 +289,8 @@
 
                   </tbody>
                 </table>
-              </div>
+                  </div>
+            </div>
             <!--<a id="cargar" class="button expand" style=" padding:1px; border-radius:25px;">lApRUEBA</a> -->
           </div>
 
@@ -379,27 +387,30 @@
 
 
           <hr/>
-			<script src="js/LoadData.js"></script>
+          <center> <a id="ManualOperations"> Manual Operations </a></center>
+          <script src="js/LoadData.js"></script>
 			
         </div>
 
+        <div id="panelTablaManual" class="panel large-12 columns large-centered"> <a id="cancelar2" class="cancel">&times;</a>
+          <div><center><a >Manual Operations</a> </center></div>
+          <hr/>
+          <div class="large-4 columns"  style="overflow-x: scroll; overflow-y: scroll;	height:380px; padding:4px">
+            <center><a id="MoveRight"> >> </a></center>
+            <table id="myTable" style="overflow-x: scroll; overflow-y: scroll;">
+              <thead>
+              <tr>
+                <th>Attributes</th>
 
-        <div class="large-4 columns"  style="overflow-x: scroll; overflow-y: scroll;	height:380px; padding:4px">
-          <a id="MoveRight"> => </a>
-          <table id="myTable" style="overflow-x: scroll; overflow-y: scroll;">
-            <thead>
-            <tr>
-              <th>Attributes</th>
+              </tr>
+              </thead>
+              <tbody>
 
-            </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-          </table>
-        </div>
-        <div class="large-4 columns" style="overflow-x: scroll; overflow-y: scroll;	height:380px; padding:4px">
-             <a id="MoveLeft"> <= </a>
+              </tbody>
+            </table>
+          </div>
+          <div class="large-4 columns" style="overflow-x: scroll; overflow-y: scroll;	height:380px; padding:4px">
+            <center><a id="MoveLeft"> << </a></center>
             <table id="myTableLeft" class="altrowstable" >
               <thead>
               <tr>
@@ -411,20 +422,22 @@
 
               </tbody>
             </table>
-        </div>
-        <div class="large-4 columns" style="overflow-x: scroll; overflow-y: scroll;	height:380px; padding:4px">
-            <a id="insertRemoved">Insert</a>
-              <table id="myTableRemoved" class="altrowstable" >
-                <thead>
-                <tr>
-                  <th>Deleted</th>
+          </div>
+          <div class="large-4 columns" style="overflow-x: scroll; overflow-y: scroll;	height:380px; padding:4px">
+           <center> <a id="insertRemoved">Insert</a></center>
+            <table id="myTableRemoved" class="altrowstable" >
+              <thead>
+              <tr>
+                <th>Deleted</th>
 
-                </tr>
-                </thead>
-                <tbody>
+              </tr>
+              </thead>
+              <tbody>
 
-                </tbody>
-              </table>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </aside>
@@ -451,14 +464,15 @@
       <div class="large-12 columns">
         <div class="row">
           <div class="large-6 columns">
-             copyright
+
           </div>
           <div class="large-6 columns">
-             footer links
+
           </div>
         </div>
       </div>
     </footer>
+
 
 
 
