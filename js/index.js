@@ -245,7 +245,7 @@
                                     .on("brushend",function(){
                                         estados(GENERALMATRIX,'wiggle');
                                         clearALLTable("tableDetail");
-
+                                        
 
                                     });
 
